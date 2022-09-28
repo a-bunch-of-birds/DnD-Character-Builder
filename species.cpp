@@ -65,6 +65,7 @@ void Species::stout_halfling(Abilityscore& object)
 
 void Species::human(Abilityscore& object)
 {
+	//big chungus score upgrade for hyuman
 	object.ability_summary.str += 1;
 	object.ability_summary.dex += 1;
 	object.ability_summary.con += 1;

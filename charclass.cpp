@@ -26,7 +26,7 @@ void Charclass::level_hd_hp()
 	
 }
 
-void Charclass::exp_lvlup()
+void Charclass::exp_lvlup(bool trigger)
 {
 	if (csumm.exp == 0 || csumm.level == 1)
 	{
@@ -60,11 +60,13 @@ void Charclass::exp_lvlup()
 		csumm.level = 6;
 		csumm.exp = 14000;
 	}
+	else {}
 }
 
 void Charclass::barbarian(Abilityscore &object)
 {
 	csumm.hit_dice = 12;
+	csumm.hd_count = 1;
 	int hp_passoff = 0;
 	int con_mod = object.ability_summary.conabm;
 	int level_storage = 0;

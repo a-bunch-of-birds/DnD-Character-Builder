@@ -111,15 +111,65 @@ int main()
 		ImGui::Begin("Character Builder Console", nullptr, ImGuiWindowFlags_NoCollapse);
 		ImGui::Columns(3);
 		ImGui::SetColumnOffset(1, 600);
-		static int press_to_roll = 0;
+		//static int press_to_roll = 0; 
+		//counter for how many times the ROLL button is pressed.  made more sense to recast as a bool
+		static bool press_to_roll = false;
 		static int three_rollctr = 0;
 		static bool dm_roll_override = false; //for checkbox allowing user to roll as many times as they wish (DM mode)
 		static bool three_rolls = false; //disables the roll button after three rolls
 		static bool disabled_marker = false;
+		static bool hstgrm_dm = false;
 		
 		ImGui::Checkbox("DM Override", &dm_roll_override);
 		ImGui::SameLine();
 		HelpMarker("EXPERIMENTAL: Check the box here to roll more than 3x and get access to previous disabled sections.  Please consult your DM before checking this box, as unlimited score rolling can give an unfair ability score advantage to players!");
+		ImGui::BeginDisabled(dm_roll_override == false);
+		if (ImGui::Button("Resort Scores?"))
+		{
+			if (!abilities.init_scores.empty())
+			{
+				std::sort(abilities.init_scores.rbegin(), abilities.init_scores.rend());
+			}
+		}
+		ImGui::SameLine();
+		HelpMarker("Resorts your rolled scores from left to right, highest to lowest");
+		ImGui::SameLine();
+		if (ImGui::Button("Clear Scores?"))
+		{
+			abilities.init_scores = {0, 0, 0, 0, 0, 0};
+			hstgrm_dm = true;
+			abilities.ability_summary.str = abilities.init_scores[0];
+			abilities.ability_summary.dex = abilities.init_scores[1];
+			abilities.ability_summary.con = abilities.init_scores[2];
+			abilities.ability_summary.intl = abilities.init_scores[3];
+			abilities.ability_summary.wis = abilities.init_scores[4];
+			abilities.ability_summary.cha = abilities.init_scores[5];
+			abilities.ability_summary.strabm = abilities.ability_modifier(abilities.ability_summary.str);
+			abilities.ability_summary.dexabm = abilities.ability_modifier(abilities.ability_summary.dex);
+			abilities.ability_summary.conabm = abilities.ability_modifier(abilities.ability_summary.con);
+			abilities.ability_summary.intlabm = abilities.ability_modifier(abilities.ability_summary.intl);
+			abilities.ability_summary.wisabm = abilities.ability_modifier(abilities.ability_summary.wis);
+			abilities.ability_summary.chaabm = abilities.ability_modifier(abilities.ability_summary.cha);
+
+			abilities.armor_class = abilities.ac_assign();
+			
+		}
+		ImGui::SameLine();
+		HelpMarker("Deletes your current scores so you can roll them again");
+		ImGui::SameLine();
+		if (ImGui::Button("Select New Species?"))
+		{
+
+		}
+		ImGui::SameLine();
+		HelpMarker("Select a different species to play");
+		if (ImGui::Button("Select New Class?"))
+		{
+
+		}
+		ImGui::SameLine();
+		HelpMarker("Select a different class to play");
+		ImGui::EndDisabled();
 		ImGui::BeginDisabled(disabled_marker);
 		if (dm_roll_override == false && three_rolls == true)
 		{
@@ -130,21 +180,21 @@ int main()
 			disabled_marker = false;
 		}
 		ImGui::Spacing();
-		
+		ImGui::EndDisabled();
 		if (ImGui::Button("PRESS TO ROLL"))
 		{
-			press_to_roll++;
+			press_to_roll = true;
 			three_rollctr++;
 		}
 		ImGui::SameLine();
 		HelpMarker("Press the 'PRESS TO ROLL' button to automatically generate a random spread of scores for your abilities.  You can roll up to three times.");
 		
-		if (press_to_roll == 1)
+		if (press_to_roll == true)
 		{
 			abilities.init_scores.clear();
 			abilities.sextuple_score();
 			std::sort(abilities.init_scores.rbegin(), abilities.init_scores.rend());
-			press_to_roll--;
+			press_to_roll = false;
 		}
 		if (three_rollctr == 3 && dm_roll_override == false)
 		{
@@ -152,13 +202,21 @@ int main()
 		}
 		
 
-		ImGui::EndDisabled();
+		
 		ImGui::Text("Ability Scores");
 		//from <int> to <float> for IM_ARRAYSIZE
 		float histogram_conv[6]; //we need floats for the integer values to show up on an ImGui histogram, so we're gonna static cast as float below and shove into a raw array
 		for (int a = 0; a < abilities.init_scores.size(); a++)
 		{
 			histogram_conv[a] = static_cast<float>(abilities.init_scores[a]); //gotta static cast here to go from int to float !!WE DO NOT TOUCH ORIGINAL VALUES!!
+		}
+		if (hstgrm_dm == true)
+		{
+			for (int i = 0; i < IM_ARRAYSIZE(histogram_conv); i++)
+			{
+				histogram_conv[i] = 0;
+			}
+			hstgrm_dm = false;
 		}
 		ImGui::PlotHistogram("Rolled results", histogram_conv, IM_ARRAYSIZE(histogram_conv), 0, NULL, 1.0, 20.0, ImVec2(0, 100.0f));
 		static bool swap_disabled = false;
@@ -248,7 +306,7 @@ int main()
 		ImGui::BeginDisabled(is_commit_clicked);
 		if (ImGui::Button("COMMIT SCORE ROLL"))
 		{
-			if (abilities.init_scores.empty())
+			if (!abilities.init_scores.empty())
 			{
 				/*
 				* 
@@ -265,20 +323,13 @@ int main()
 					ImGui::EndPopup();
 				}
 				*/
-				
-			}
-			
 
-			else 
-			{
-				
-
-				abilities.ability_summary.str += abilities.init_scores[0];
-				abilities.ability_summary.dex += abilities.init_scores[1];
-				abilities.ability_summary.con += abilities.init_scores[2];
-				abilities.ability_summary.intl += abilities.init_scores[3];
-				abilities.ability_summary.wis += abilities.init_scores[4];
-				abilities.ability_summary.cha += abilities.init_scores[5];
+				abilities.ability_summary.str = abilities.init_scores[0];
+				abilities.ability_summary.dex = abilities.init_scores[1];
+				abilities.ability_summary.con = abilities.init_scores[2];
+				abilities.ability_summary.intl = abilities.init_scores[3];
+				abilities.ability_summary.wis = abilities.init_scores[4];
+				abilities.ability_summary.cha = abilities.init_scores[5];
 				abilities.ability_summary.strabm = abilities.ability_modifier(abilities.ability_summary.str);
 				abilities.ability_summary.dexabm = abilities.ability_modifier(abilities.ability_summary.dex);
 				abilities.ability_summary.conabm = abilities.ability_modifier(abilities.ability_summary.con);
@@ -287,21 +338,136 @@ int main()
 				abilities.ability_summary.chaabm = abilities.ability_modifier(abilities.ability_summary.cha);
 
 				abilities.armor_class = abilities.ac_assign();
+				
 			}
+			else {}
+			
 			is_commit_clicked = true;
 			swap_disabled = true;
 		}
 		ImGui::EndDisabled();
 		
-		
+		ImGui::Spacing();
+		//if (is_commit_clicked == true)
+		//{
+		ImGui::Text("Strength:      %d", abilities.ability_summary.str);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.strabm);
+		ImGui::Spacing();
+		ImGui::Text("Dexterity:     %d", abilities.ability_summary.dex);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.dexabm);
+		ImGui::Spacing();
+		ImGui::Text("Constitution:  %d", abilities.ability_summary.con);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.conabm);
+		ImGui::Spacing();
+		ImGui::Text("Intelligence:  %d", abilities.ability_summary.intl);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.intlabm);
+		ImGui::Spacing();
+		ImGui::Text("Wisdom:        %d", abilities.ability_summary.wis);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.wisabm);
+		ImGui::Spacing();
+		ImGui::Text("Charisma:      %d", abilities.ability_summary.cha);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.chaabm);
+		ImGui::Spacing();
+		ImGui::Text("Armor Class (AC): %d", abilities.armor_class);
+		ImGui::SameLine();
+		//}
 
 
 		ImGui::NextColumn();
-		const char* species_selec[] = {"Dwarf", "Elf", "Halfling", "Human", "Dragonborn", "Gnome", "Half-Elf", "Half-Orc", "Tiefling"};
-		static int species_current_idx = -1;
+		//Character selec goes here
+		//<><><><><><><><><><><><><><><><><>
+		
+		const char* clss_selec[] = 
+		{
+			" ", "Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"
+		};
+		static int clss_current_idx = 0;
+		static bool clss_picked = false;
+		ImGui::BeginDisabled(clss_picked == true);
+		//if (ImGui::BeginListBox("##listbox_class", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
+		if (ImGui::BeginListBox("##listbox_class"))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(clss_selec); n++)
+			{
+				const bool is_selected = (clss_current_idx == n);
+				if (ImGui::Selectable(clss_selec[n], is_selected))
+					clss_current_idx = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+				if (ImGui::IsItemClicked(0) && is_selected)
+				{
+					if (clss_current_idx == 1)
+					{
+						chrctr.barbarian(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 2)
+					{
+
+					}
+					else if (clss_current_idx == 3)
+					{
+
+					}
+					else if (clss_current_idx == 4)
+					{
+
+					}
+					else if (clss_current_idx == 5)
+					{
+
+					}
+					else if (clss_current_idx == 6)
+					{
+
+					}
+					else if (clss_current_idx == 7)
+					{
+
+					}
+					else if (clss_current_idx == 8)
+					{
+
+					}
+					else if (clss_current_idx == 9)
+					{
+
+					}
+					else if (clss_current_idx == 10)
+					{
+
+					}
+					else if (clss_current_idx == 11)
+					{
+
+					}
+					else if (clss_current_idx == 12)
+					{
+
+					}
+					else {}
+				}
+			}
+			ImGui::EndListBox();
+		}
+		ImGui::EndDisabled();
+		//ImGui::Spacing();
+		ImGui::SameLine();
+		//<><><><><><><><><><><><><><><><><>
+		//Character selec ends here
+
+		const char* species_selec[] = { " ", "Dwarf", "Elf", "Halfling", "Human", "Dragonborn", "Gnome", "Half-Elf", "Half-Orc", "Tiefling"};
+		static int species_current_idx = 0;
 		static bool species_picked = false;
 		ImGui::BeginDisabled(species_picked);
-		if (ImGui::BeginListBox("##listbox_species", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
+		//if (ImGui::BeginListBox("##listbox_species", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
+		if (ImGui::BeginListBox("##listbox_species"))
 		{
 			for (int n = 0; n < IM_ARRAYSIZE(species_selec); n++)
 			{
@@ -316,47 +482,47 @@ int main()
 				if (ImGui::IsItemClicked(0) && is_selected)
 				{
 
-					if (species_current_idx == 0)
+					if (species_current_idx == 1)
 					{
 						species.default_dwarf(abilities);
 						ImGui::OpenPopup("Please select a dwarf sub-species");
 					}
-					if (species_current_idx == 1)
+					if (species_current_idx == 2)
 					{
 						species.default_elf(abilities);
 						ImGui::OpenPopup("Please select an elf sub-species");
 					}
-					if (species_current_idx == 2)
+					if (species_current_idx == 3)
 					{
 						species.default_halfling(abilities);
 						ImGui::OpenPopup("Please select a halfling sub-species");
 					}
-					if (species_current_idx == 3)
+					if (species_current_idx == 4)
 					{
 						species.human(abilities);
 						species_picked = true; //no popup here so we can disable the block straight away
 					}
-					if (species_current_idx == 4)
+					if (species_current_idx == 5)
 					{
 						species.dragonborn(abilities);
 						species_picked = true;
 					}
-					if (species_current_idx == 5)
+					if (species_current_idx == 6)
 					{
 						species.default_gnome(abilities);
 						ImGui::OpenPopup("Please select a gnome sub-species");
 					}
-					if (species_current_idx == 6)
+					if (species_current_idx == 7)
 					{
 						species.default_halfelf(abilities);
 						ImGui::OpenPopup("Please select (2) ability scores to boost by +1");
 					}
-					if (species_current_idx == 7)
+					if (species_current_idx == 8)
 					{
 						species.halforc(abilities);
 						species_picked = true;
 					}
-					if (species_current_idx == 8)
+					if (species_current_idx == 9)
 					{
 						species.tiefling(abilities);
 						species_picked = true;
@@ -661,7 +827,7 @@ int main()
 				
 				else 
 				{
-					std::cout << "char a conditionals have a problem" << std::endl;
+					//std::cout << "char a conditionals have a problem" << std::endl;
 				}
 
 				if (str_b == true)
@@ -687,7 +853,7 @@ int main()
 				
 				else 
 				{
-					std::cout << "char b conditionals have a problem" << std::endl;
+					//std::cout << "char b conditionals have a problem" << std::endl;
 				}
 				
 				if (ImGui::Button("COMMIT"))
@@ -708,36 +874,7 @@ int main()
 
 
 		ImGui::NextColumn();
-		ImGui::Spacing();
-		//if (is_commit_clicked == true)
-		//{
-		ImGui::Text("Strength:      %d", abilities.ability_summary.str);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.strabm);
-		ImGui::Spacing();
-		ImGui::Text("Dexterity:     %d", abilities.ability_summary.dex);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.dexabm);
-		ImGui::Spacing();
-		ImGui::Text("Constitution:  %d", abilities.ability_summary.con);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.conabm);
-		ImGui::Spacing();
-		ImGui::Text("Intelligence:  %d", abilities.ability_summary.intl);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.intlabm);
-		ImGui::Spacing();
-		ImGui::Text("Wisdom:        %d", abilities.ability_summary.wis);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.wisabm);
-		ImGui::Spacing();
-		ImGui::Text("Charisma:      %d", abilities.ability_summary.cha);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.chaabm);
-		ImGui::Spacing();
-		ImGui::Text("Armor Class (AC): %d", abilities.armor_class);
-		ImGui::SameLine();
-		//}
+		
 		//<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 		ImGui::End();
 
@@ -777,9 +914,17 @@ int main()
 	std::cout << abilities.ability_summary.chaabm << std::endl;
 
 
-	std::cout << "after pressing the dwarf button" << std::endl;
-	std::cout << abilities.ability_summary.con << std::endl;
-	std::cout << abilities.ability_summary.conabm << std::endl;
+	//std::cout << "after pressing the dwarf button" << std::endl;
+	//std::cout << abilities.ability_summary.con << std::endl;
+	//std::cout << abilities.ability_summary.conabm << std::endl;
+
+	std::cout << "class scores" << std::endl;
+	std::cout << "HP: ";
+	std::cout << chrctr.csumm.hit_points << std::endl;
+	std::cout << "Hit die: ";
+	std::cout << chrctr.csumm.hit_dice << std::endl;
+	std::cout << "level: ";
+	std::cout << chrctr.csumm.level << std::endl;
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();

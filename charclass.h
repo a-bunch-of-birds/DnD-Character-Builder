@@ -23,19 +23,19 @@ public:
 	~Charclass() {};
 	void level_hd_hp();
 	int hd_lvl_calc();
-	void exp_lvlup();
+	void exp_lvlup(bool trigger);
 	void barbarian(Abilityscore& object);
-	void bard();
-	void cleric();
-	void druid();
-	void fighter();
-	void monk();
-	void paladin();
-	void ranger();
-	void rogue();
-	void sorcerer();
-	void warlock();
-	void wizard();
+	void bard(Abilityscore &object);
+	void cleric(Abilityscore& object);
+	void druid(Abilityscore& object);
+	void fighter(Abilityscore& object);
+	void monk(Abilityscore& object);
+	void paladin(Abilityscore& object);
+	void ranger(Abilityscore& object);
+	void rogue(Abilityscore& object);
+	void sorcerer(Abilityscore& object);
+	void warlock(Abilityscore& object);
+	void wizard(Abilityscore& object);
 
 
 };
