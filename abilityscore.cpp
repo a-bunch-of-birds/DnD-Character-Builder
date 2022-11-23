@@ -361,6 +361,7 @@ int Abilityscore::ac_assign()
     return armor_class = abm_passoff + 10;
 }
 
+    
 
 int Abilityscore::StrengthScore() {
     

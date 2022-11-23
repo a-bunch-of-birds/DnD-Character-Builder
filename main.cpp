@@ -5,17 +5,21 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+
 #include <string>
 #include <vector>
 #include <iostream>
 #include <cstdlib>
 #include <algorithm>
+
 #include "character.h"
 #include "charclass.h"
 #include "abilityscore.h"
 #include "species.h"
 
 bool is_commit_clicked = false; //need this as a global variable
+
+int abscore_total = 0;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -180,7 +184,7 @@ int main()
 			disabled_marker = false;
 		}
 		ImGui::Spacing();
-		ImGui::EndDisabled();
+		//ImGui::EndDisabled();
 		if (ImGui::Button("PRESS TO ROLL"))
 		{
 			press_to_roll = true;
@@ -194,13 +198,18 @@ int main()
 			abilities.init_scores.clear();
 			abilities.sextuple_score();
 			std::sort(abilities.init_scores.rbegin(), abilities.init_scores.rend());
+			//EXP HISTORY CLASS
+
+
+
+			//END EXP HISTORY CLASS
 			press_to_roll = false;
 		}
 		if (three_rollctr == 3 && dm_roll_override == false)
 		{
 			three_rolls = true;
 		}
-		
+		ImGui::EndDisabled();
 
 		
 		ImGui::Text("Ability Scores");
@@ -218,7 +227,7 @@ int main()
 			}
 			hstgrm_dm = false;
 		}
-		ImGui::PlotHistogram("Rolled results", histogram_conv, IM_ARRAYSIZE(histogram_conv), 0, NULL, 1.0, 20.0, ImVec2(0, 100.0f));
+		ImGui::PlotHistogram("##Rolled results", histogram_conv, IM_ARRAYSIZE(histogram_conv), 0, NULL, 1.0, 20.0, ImVec2(520.0f, 200.0f));
 		static bool swap_disabled = false;
 		ImGui::BeginDisabled(swap_disabled);
 		
@@ -296,6 +305,7 @@ int main()
 		}
 
 		/*THIS MODAL POPUP DOES NOT WORK RIGHT NOW BUT KEEPS US FROM VECTOR SUBSCRIPTS*/
+		//10.26: does it actually need to be there for subscript overruns to be avoided??
 		
 		//bool is_commit_clicked = false;
 		if (dm_roll_override == true)
@@ -348,126 +358,16 @@ int main()
 		ImGui::EndDisabled();
 		
 		ImGui::Spacing();
-		//if (is_commit_clicked == true)
-		//{
-		ImGui::Text("Strength:      %d", abilities.ability_summary.str);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.strabm);
-		ImGui::Spacing();
-		ImGui::Text("Dexterity:     %d", abilities.ability_summary.dex);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.dexabm);
-		ImGui::Spacing();
-		ImGui::Text("Constitution:  %d", abilities.ability_summary.con);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.conabm);
-		ImGui::Spacing();
-		ImGui::Text("Intelligence:  %d", abilities.ability_summary.intl);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.intlabm);
-		ImGui::Spacing();
-		ImGui::Text("Wisdom:        %d", abilities.ability_summary.wis);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.wisabm);
-		ImGui::Spacing();
-		ImGui::Text("Charisma:      %d", abilities.ability_summary.cha);
-		ImGui::SameLine();
-		ImGui::Text(" + (%d)", abilities.ability_summary.chaabm);
-		ImGui::Spacing();
-		ImGui::Text("Armor Class (AC): %d", abilities.armor_class);
-		ImGui::SameLine();
-		//}
-
-
-		ImGui::NextColumn();
-		//Character selec goes here
-		//<><><><><><><><><><><><><><><><><>
 		
-		const char* clss_selec[] = 
-		{
-			" ", "Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"
-		};
-		static int clss_current_idx = 0;
-		static bool clss_picked = false;
-		ImGui::BeginDisabled(clss_picked == true);
-		//if (ImGui::BeginListBox("##listbox_class", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
-		if (ImGui::BeginListBox("##listbox_class"))
-		{
-			for (int n = 0; n < IM_ARRAYSIZE(clss_selec); n++)
-			{
-				const bool is_selected = (clss_current_idx == n);
-				if (ImGui::Selectable(clss_selec[n], is_selected))
-					clss_current_idx = n;
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();
-				if (ImGui::IsItemClicked(0) && is_selected)
-				{
-					if (clss_current_idx == 1)
-					{
-						chrctr.barbarian(abilities);
-						clss_picked = true;
-					}
-					else if (clss_current_idx == 2)
-					{
-
-					}
-					else if (clss_current_idx == 3)
-					{
-
-					}
-					else if (clss_current_idx == 4)
-					{
-
-					}
-					else if (clss_current_idx == 5)
-					{
-
-					}
-					else if (clss_current_idx == 6)
-					{
-
-					}
-					else if (clss_current_idx == 7)
-					{
-
-					}
-					else if (clss_current_idx == 8)
-					{
-
-					}
-					else if (clss_current_idx == 9)
-					{
-
-					}
-					else if (clss_current_idx == 10)
-					{
-
-					}
-					else if (clss_current_idx == 11)
-					{
-
-					}
-					else if (clss_current_idx == 12)
-					{
-
-					}
-					else {}
-				}
-			}
-			ImGui::EndListBox();
-		}
-		ImGui::EndDisabled();
-		//ImGui::Spacing();
-		ImGui::SameLine();
-		//<><><><><><><><><><><><><><><><><>
-		//Character selec ends here
-
+		ImGui::NextColumn();
+		
 		const char* species_selec[] = { " ", "Dwarf", "Elf", "Halfling", "Human", "Dragonborn", "Gnome", "Half-Elf", "Half-Orc", "Tiefling"};
 		static int species_current_idx = 0;
 		static bool species_picked = false;
 		ImGui::BeginDisabled(species_picked);
 		//if (ImGui::BeginListBox("##listbox_species", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
-		if (ImGui::BeginListBox("##listbox_species"))
+		ImGui::Text("Species Selection: ");
+		if (ImGui::BeginListBox("##listbox_species", ImVec2(425, 0)))
 		{
 			for (int n = 0; n < IM_ARRAYSIZE(species_selec); n++)
 			{
@@ -851,7 +751,7 @@ int main()
 					b = 'w';
 				}
 				
-				else 
+				else  
 				{
 					//std::cout << "char b conditionals have a problem" << std::endl;
 				}
@@ -872,8 +772,437 @@ int main()
 		//ENDDISABLED MARKER FOR SPECIES LIST BOX
 		ImGui::EndDisabled();
 
+		//Character selec goes here
+		//<><><><><><><><><><><><><><><><><>
+
+		const char* clss_selec[] =
+		{
+			" ", "Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"
+		};
+		static int clss_current_idx = 0;
+		static bool clss_picked = false;
+		ImGui::BeginDisabled(clss_picked == true);
+		//if (ImGui::BeginListBox("##listbox_class", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
+		ImGui::Text("Class Selection: ");
+		if (ImGui::BeginListBox("##listbox_class", ImVec2(425, 0)))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(clss_selec); n++)
+			{
+				const bool is_selected = (clss_current_idx == n);
+				if (ImGui::Selectable(clss_selec[n], is_selected))
+					clss_current_idx = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+				if (ImGui::IsItemClicked(0) && is_selected)
+				{
+					if (clss_current_idx == 1)
+					{
+						chrctr.barbarian(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 2)
+					{
+						chrctr.bard(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 3)
+					{
+						chrctr.cleric(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 4)
+					{
+						chrctr.druid(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 5)
+					{
+						chrctr.fighter(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 6)
+					{
+						chrctr.monk(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 7)
+					{
+						chrctr.paladin(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 8)
+					{
+						chrctr.ranger(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 9)
+					{
+						chrctr.rogue(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 10)
+					{
+						chrctr.sorcerer(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 11)
+					{
+						chrctr.warlock(abilities);
+						clss_picked = true;
+					}
+					else if (clss_current_idx == 12)
+					{
+						chrctr.wizard(abilities);
+						clss_picked = true;
+					}
+					else {}
+				}
+			}
+			ImGui::EndListBox();
+		}
+		ImGui::EndDisabled();
+		//ImGui::Spacing();
+		//ImGui::SameLine();
+		//<><><><><><><><><><><><><><><><><>
+		//Character selec ends here
+
+		//<><><><><><><><><><><><><><><><><><>
+		//Level selec begins here
+		ImGui::Text("Level Selection: ");
+		ImGui::SameLine();
+		HelpMarker("You can click and drag to desired level, or double click to enter manually");
+		static int lvl_int = 1;
+		// should we make this global?
+		//yes
+		//int abscore_total = 0; 
+		static bool lvl_picked = false;
+		ImGui::BeginDisabled(lvl_picked == true);
+		ImGui::PushItemWidth(425);
+		ImGui::DragInt("##levelselection", &lvl_int, 0.5f, 1, 20, "%d");
+		if (ImGui::Button("COMMIT LEVEL SELECTION"))
+		{
+			chrctr.csumm.level = lvl_int; //is this really necessary?
+			chrctr.prof_incr();
+			abscore_total = chrctr.ab_upscore();
+			lvl_picked = true;
+			std::cout << "abscore_total: " << abscore_total << std::endl;
+		};
+		ImGui::EndDisabled();
+		if (abscore_total > 0)
+		{
+			ImGui::OpenPopup("ABILITY SCORE UPGRADES");
+		}
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+		if (ImGui::BeginPopupModal("ABILITY SCORE UPGRADES", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+
+			ImGui::Text("Select ability scores to increase");
+			ImGui::SameLine();
+			HelpMarker("When you reach certain levels, you get to increase your scores in increments of +2 and +1; you cannot increase any ability score beyond level 20 with this feature.");
+			bool disable_str_decr = false;
+			bool disable_str_incr = false;
+			bool disable_dex_decr = false;
+			bool disable_dex_incr = false;
+			bool disable_con_decr = false;
+			bool disable_con_incr = false;
+			bool disable_intl_decr = false;
+			bool disable_intl_incr = false;
+			bool disable_wis_decr = false;
+			bool disable_wis_incr = false;
+			bool disable_cha_decr = false;
+			bool disable_cha_incr = false;
+
+			static int str_up = abilities.ability_summary.str;
+			static int dex_up = abilities.ability_summary.dex;
+			static int con_up = abilities.ability_summary.con;
+			static int intl_up = abilities.ability_summary.intl;
+			static int wis_up = abilities.ability_summary.wis;
+			static int cha_up = abilities.ability_summary.cha;
+			
+			//start strength incr/decr here
+			//<><><><><><><><><><><><><><><>
+			ImGui::Text("Points available: %d", abscore_total);
+			ImGui::Text("STR: %d", str_up); 
+			ImGui::SameLine(); 
+			if (str_up == abilities.ability_summary.str)
+			{
+				disable_str_decr = true;
+			}
+			ImGui::BeginDisabled(disable_str_decr == true);
+			if (ImGui::SmallButton("UNDO##strclr"))
+			{
+				int undo = str_up - abilities.ability_summary.str; //obtain the difference between incr score and original score
+				abscore_total += undo; //add the difference back to the abscore_total
+				str_up -= undo; //return str_up to origina value (ability_summary.str)
+
+			}
+			//ImGui::SameLine();
+			ImGui::EndDisabled();
+			ImGui::SameLine();
+			if (str_up == 20 || abscore_total == 0)
+			{
+				disable_str_incr = true;
+			}
+			ImGui::BeginDisabled(disable_str_incr == true);
+			if (ImGui::SmallButton("+2##stri2"))
+			{
+				str_up += 2;
+				abscore_total -= 2;
+			}
+			ImGui::SameLine();
+			if (ImGui::SmallButton("+1##stri1"))
+			{
+				str_up++;
+				abscore_total--;
+			}
+			ImGui::EndDisabled();
+
+			//<><><><><><><><><>
+			//end str incr/decr here
+
+			//<><><><><><><><><><>
+			//begin dex incr/decr here
+			ImGui::Text("DEX: %d", dex_up);
+			ImGui::SameLine();
+			if (dex_up == abilities.ability_summary.dex)
+			{
+				disable_dex_decr = true;
+			}
+			ImGui::BeginDisabled(disable_dex_decr == true);
+			if (ImGui::SmallButton("UNDO##dexclr"))
+			{
+				int undo = dex_up - abilities.ability_summary.dex; //obtain the difference between incr score and original score
+				abscore_total += undo; //add the difference back to the abscore_total
+				dex_up -= undo; //return str_up to origina value (ability_summary.dex)
+			}
+			ImGui::EndDisabled();
+			ImGui::SameLine();
+			if (dex_up == 20 || abscore_total == 0)
+			{
+				disable_dex_incr = true;
+			}
+			ImGui::BeginDisabled(disable_dex_incr == true);
+			if (ImGui::SmallButton("+2##dexi2"))
+			{
+				dex_up += 2;
+				abscore_total -= 2;
+			}
+			ImGui::SameLine();
+			if (ImGui::SmallButton("+1##dexi1"))
+			{
+				str_up++;
+				abscore_total--;
+			}
+			ImGui::EndDisabled();
+			//dex incr/decr ends here
+			//<><><><><><><><><><><><>
+
+			//<><><><><><><><><><><><>
+			//con incr/decr begins here
+			ImGui::Text("CON: %d", con_up);
+			ImGui::SameLine();
+			if (con_up == abilities.ability_summary.con)
+			{
+				disable_con_decr = true;
+			}
+			ImGui::BeginDisabled(disable_con_decr == true);
+			if (ImGui::SmallButton("UNDO##conclr"))
+			{
+				int undo = con_up - abilities.ability_summary.con; //obtain the difference between incr score and original score
+				abscore_total += undo; //add the difference back to the abscore_total
+				con_up -= undo; //return str_up to original value (ability_summary.con)
+			}
+			ImGui::EndDisabled();
+			ImGui::SameLine();
+			if (con_up == 20 || abscore_total == 0)
+			{
+				disable_con_incr = true;
+			}
+			ImGui::BeginDisabled(disable_con_incr == true);
+			if (ImGui::SmallButton("+2##coni2"))
+			{
+				con_up += 2;
+				abscore_total -= 2;
+			}
+			ImGui::SameLine();
+			if (ImGui::SmallButton("+1##coni1"))
+			{
+				con_up++;
+				abscore_total--;
+			}
+			ImGui::EndDisabled();
+			//con incr/decr ends here
+			//<><><><><><><><>
+
+			//<><><><><><><><>
+			//intl incr/decr begins here
+			ImGui::Text("INT: %d", intl_up);
+			ImGui::SameLine();
+			if (intl_up == abilities.ability_summary.intl)
+			{
+				disable_intl_decr = true;
+			}
+			ImGui::BeginDisabled(disable_intl_decr == true);
+			if (ImGui::SmallButton("UNDO##intlclr"))
+			{
+				int undo = intl_up - abilities.ability_summary.intl; //obtain the difference between incr score and original score
+				abscore_total += undo; //add the difference back to the abscore_total
+				intl_up -= undo; //return str_up to origina value (ability_summary.dex)
+			}
+			ImGui::EndDisabled();
+			ImGui::SameLine();
+			if (intl_up == 20 || abscore_total == 0)
+			{
+				disable_intl_incr = true;
+			}
+			ImGui::BeginDisabled(disable_intl_incr == true);
+			if (ImGui::SmallButton("+2##intli2"))
+			{
+				intl_up += 2;
+				abscore_total -= 2;
+			}
+			ImGui::SameLine();
+			if (ImGui::SmallButton("+1##intli1"))
+			{
+				intl_up++;
+				abscore_total--;
+			}
+			ImGui::EndDisabled();
+			//intl incr/decr ends here
+			//<><><><><><><><><><><><>
+
+			//<><><><><><><><><><><><>
+			//wis incr/decr begins here
+
+			ImGui::Text("WIS: %d", wis_up);
+			ImGui::SameLine();
+			if (wis_up == abilities.ability_summary.wis)
+			{
+				disable_wis_decr = true;
+			}
+			ImGui::BeginDisabled(disable_wis_decr == true);
+			if (ImGui::SmallButton("UNDO##wisclr"))
+			{
+				int undo = wis_up - abilities.ability_summary.wis; //obtain the difference between incr score and original score
+				abscore_total += undo; //add the difference back to the abscore_total
+				wis_up -= undo; //return str_up to origina value (ability_summary.dex)
+			}
+			ImGui::EndDisabled();
+			ImGui::SameLine();
+			if (wis_up == 20 || abscore_total == 0)
+			{
+				disable_wis_incr = true;
+			}
+			ImGui::BeginDisabled(disable_wis_incr == true);
+			if (ImGui::SmallButton("+2##wisi2"))
+			{
+				wis_up += 2;
+				abscore_total -= 2;
+			}
+			ImGui::SameLine();
+			if (ImGui::SmallButton("+1##wisi1"))
+			{
+				wis_up++;
+				abscore_total--;
+			}
+			ImGui::EndDisabled();
+			//wis incr/decr ends here
+			//<><><><><><><><><><><><><>
+
+			//<><><><><><><><><><><><><>
+			//cha incr/decr begins here
+			ImGui::Text("CHA: %d", cha_up);
+			ImGui::SameLine();
+			if (cha_up == abilities.ability_summary.cha)
+			{
+				disable_cha_decr = true;
+			}
+			ImGui::BeginDisabled(disable_cha_decr == true);
+			if (ImGui::SmallButton("UNDO##chaclr"))
+			{
+				int undo = cha_up - abilities.ability_summary.cha; //obtain the difference between incr score and original score
+				abscore_total += undo; //add the difference back to the abscore_total
+				cha_up -= undo; //return str_up to origina value (ability_summary.dex)
+			}
+			ImGui::EndDisabled();
+			ImGui::SameLine();
+			if (cha_up == 20 || abscore_total == 0)
+			{
+				disable_cha_incr = true;
+			}
+			ImGui::BeginDisabled(disable_cha_incr == true);
+			if (ImGui::SmallButton("+2##chai2"))
+			{
+				cha_up += 2;
+				abscore_total -= 2;
+			}
+			ImGui::SameLine();
+			if (ImGui::SmallButton("+1##chai1"))
+			{
+				cha_up++;
+				abscore_total--;
+			}
+			ImGui::EndDisabled();
+			//cha incr/decr ends here
+			//<><><><><><><><><><><><><><><><>
+
+			if (ImGui::Button("COMMIT SCORE INCREASES"))
+			{
+				abilities.ability_summary.str = str_up;
+				abilities.ability_summary.dex = dex_up;
+				abilities.ability_summary.con = con_up;
+				abilities.ability_summary.intl = intl_up;
+				abilities.ability_summary.wis = wis_up;
+				abilities.ability_summary.cha = cha_up;
+				abilities.ability_summary.strabm = abilities.ability_modifier(str_up);
+				abilities.ability_summary.dexabm = abilities.ability_modifier(dex_up);
+				abilities.ability_summary.conabm = abilities.ability_modifier(con_up);
+				abilities.ability_summary.intlabm = abilities.ability_modifier(intl_up);
+				abilities.ability_summary.wisabm = abilities.ability_modifier(wis_up);
+				abilities.ability_summary.chaabm = abilities.ability_modifier(cha_up);
+				
+				ImGui::CloseCurrentPopup();
+			}
+
+			
+			ImGui::EndPopup();
+
+		}
+
+		
+
+
+		//<><><><><><><><><><><><><><><><><><>
+		//Level selec ends here
 
 		ImGui::NextColumn();
+		ImGui::Text("Strength:      %d", abilities.ability_summary.str);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.strabm);
+		ImGui::Spacing();
+		ImGui::Text("Dexterity:     %d", abilities.ability_summary.dex);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.dexabm);
+		ImGui::Spacing();
+		ImGui::Text("Constitution:  %d", abilities.ability_summary.con);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.conabm);
+		ImGui::Spacing();
+		ImGui::Text("Intelligence:  %d", abilities.ability_summary.intl);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.intlabm);
+		ImGui::Spacing();
+		ImGui::Text("Wisdom:        %d", abilities.ability_summary.wis);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.wisabm);
+		ImGui::Spacing();
+		ImGui::Text("Charisma:      %d", abilities.ability_summary.cha);
+		ImGui::SameLine();
+		ImGui::Text(" + (%d)", abilities.ability_summary.chaabm);
+		ImGui::Spacing();
+		ImGui::Text("Armor Class (AC): %d", abilities.armor_class);
+		ImGui::SameLine();
 		
 		//<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 		ImGui::End();
@@ -925,6 +1254,12 @@ int main()
 	std::cout << chrctr.csumm.hit_dice << std::endl;
 	std::cout << "level: ";
 	std::cout << chrctr.csumm.level << std::endl;
+	std::cout << "prof bonus: ";
+	std::cout << chrctr.csumm.prof_bonus << std::endl;
+	std::cout << "spell save dc: ";
+	std::cout << chrctr.csumm.spell_save_dc << std::endl;
+	std::cout << "spell attack mod: ";
+	std::cout << chrctr.csumm.spell_attk_mod << std::endl;
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
