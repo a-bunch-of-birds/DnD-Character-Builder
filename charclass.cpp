@@ -24,7 +24,8 @@ int Charclass::hd_lvl_calc()
 void Charclass::level_hd_hp(Abilityscore object)
 {
 	int hp_passoff = 0;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 
 	for (int i = 2; i <= csumm.level; i++)
 	{
@@ -153,7 +154,8 @@ void Charclass::barbarian(Abilityscore object)
 {
 	csumm.hit_dice = 12;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 12;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -165,7 +167,8 @@ void Charclass::bard(Abilityscore object)
 {
 	csumm.hit_dice = 8;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
+	//int con_mod = object.ability_summary.conabm;
 	csumm.hit_points = con_mod + 8;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -177,7 +180,8 @@ void Charclass::cleric(Abilityscore object)
 {
 	csumm.hit_dice = 8;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 8;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -189,7 +193,8 @@ void Charclass::druid(Abilityscore object)
 {
 	csumm.hit_dice = 8;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 8;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -201,7 +206,8 @@ void Charclass::fighter(Abilityscore object)
 {
 	csumm.hit_dice = 10;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 10;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -213,7 +219,8 @@ void Charclass::monk(Abilityscore object)
 {
 	csumm.hit_dice = 8;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 8;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -225,7 +232,8 @@ void Charclass::paladin(Abilityscore object)
 {
 	csumm.hit_dice = 10;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 10;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -237,7 +245,8 @@ void Charclass::ranger(Abilityscore object)
 {
 	csumm.hit_dice = 10;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 10;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -249,7 +258,8 @@ void Charclass::rogue(Abilityscore object)
 {
 	csumm.hit_dice = 8;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 8;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -261,7 +271,8 @@ void Charclass::sorcerer(Abilityscore object)
 {
 	csumm.hit_dice = 6;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 6;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -273,7 +284,8 @@ void Charclass::warlock(Abilityscore object)
 {
 	csumm.hit_dice = 8;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 8;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;
@@ -285,7 +297,8 @@ void Charclass::wizard(Abilityscore object)
 {
 	csumm.hit_dice = 6;
 	csumm.hd_count = 1;
-	int con_mod = object.ability_summary.conabm;
+	//int con_mod = object.ability_summary.conabm;
+	int con_mod = object.ConAbm();
 	csumm.hit_points = con_mod + 6;
 	csumm.prof_bonus = 2;
 	csumm.level = 1;

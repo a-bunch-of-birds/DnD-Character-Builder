@@ -17,7 +17,7 @@ private:
 	bool species;
 	bool subspecies;
 	bool clss;
-	bool level;
+	//bool level;
 public:
 
 };
